@@ -540,7 +540,7 @@ func MakeWSRpcHost(ctx *cli.Context) string {
 }
 
 // MakeDatabaseHandles raises out the number of allowed file handles per process
-// for Geth and returns half of the allowance to assign to the database.
+// for Gjbsee and returns half of the allowance to assign to the database.
 func MakeDatabaseHandles() int {
 	if err := raiseFdLimit(2048); err != nil {
 		Fatalf("Failed to raise file descriptor allowance: %v", err)
@@ -760,7 +760,7 @@ func MakeSystemNode(name, version string, relconf release.Config, extra []byte, 
 	if err := stack.Register(func(ctx *node.ServiceContext) (node.Service, error) {
 		return release.NewReleaseService(ctx, relconf)
 	}); err != nil {
-		Fatalf("Failed to register the Geth release oracle service: %v", err)
+		Fatalf("Failed to register the Gjbsee release oracle service: %v", err)
 	}
 	return stack
 }
@@ -834,7 +834,7 @@ func MustMakeChainConfigFromDb(ctx *cli.Context, db ethdb.Database) *core.ChainC
 		if !config.DAOForkSupport {
 			choice = "OPPOSE"
 		}
-		current := fmt.Sprintf("Geth is currently configured to %s the DAO hard-fork!", choice)
+		current := fmt.Sprintf("Gjbsee is currently configured to %s the DAO hard-fork!", choice)
 		howtoswap := fmt.Sprintf("You can change your choice prior to block #%v with --support-dao-fork or --oppose-dao-fork.", config.DAOForkBlock)
 		howtosync := fmt.Sprintf("After the hard-fork block #%v passed, changing chains requires a resync from scratch!", config.DAOForkBlock)
 		separator := strings.Repeat("-", len(howtoswap))

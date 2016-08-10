@@ -172,13 +172,13 @@ func testDAOForkBlockNewChain(t *testing.T, testnet bool, genesis string, votes 
 	datadir := tmpdir(t)
 	defer os.RemoveAll(datadir)
 
-	// Start a Geth instance with the requested flags set and immediately terminate
+	// Start a Gjbsee instance with the requested flags set and immediately terminate
 	if genesis != "" {
 		json := filepath.Join(datadir, "genesis.json")
 		if err := ioutil.WriteFile(json, []byte(genesis), 0600); err != nil {
 			t.Fatalf("failed to write genesis file: %v", err)
 		}
-		runGeth(t, "--datadir", datadir, "init", json).cmd.Wait()
+		runGjbsee(t, "--datadir", datadir, "init", json).cmd.Wait()
 	}
 	for _, vote := range votes {
 		args := []string{"--port", "0", "--maxpeers", "0", "--nodiscover", "--nat", "none", "--ipcdisable", "--datadir", datadir}
@@ -191,8 +191,8 @@ func testDAOForkBlockNewChain(t *testing.T, testnet bool, genesis string, votes 
 		if vote[1] {
 			args = append(args, "--oppose-dao-fork")
 		}
-		geth := runGeth(t, append(args, []string{"--exec", "2+2", "console"}...)...)
-		geth.cmd.Wait()
+		gjbsee := runGjbsee(t, append(args, []string{"--exec", "2+2", "console"}...)...)
+		gjbsee.cmd.Wait()
 	}
 	// Retrieve the DAO config flag from the database
 	path := filepath.Join(datadir, "chaindata")
