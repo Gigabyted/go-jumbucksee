@@ -28,9 +28,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/logger"
-	"github.com/ethereum/go-ethereum/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/logger"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
 )
 
 // Minimum amount of time between cache reloads. This limit applies if the platform does

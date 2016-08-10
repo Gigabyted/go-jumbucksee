@@ -20,7 +20,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/jumbucks/go-jumbucksee/common"
 )
 
 type dummyContractRef struct {

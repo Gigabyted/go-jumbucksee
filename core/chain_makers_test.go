@@ -20,11 +20,11 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/jumbucks/go-jumbucksee/core/types"
+	"github.com/jumbucks/go-jumbucksee/crypto"
+	"github.com/jumbucks/go-jumbucksee/ethdb"
+	"github.com/jumbucks/go-jumbucksee/event"
+	"github.com/jumbucks/go-jumbucksee/params"
 )
 
 func ExampleGenerateChain() {

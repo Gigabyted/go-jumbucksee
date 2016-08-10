@@ -20,8 +20,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/core/types"
 )
 
 // ErrNoCode is returned by call and transact operations for which the requested

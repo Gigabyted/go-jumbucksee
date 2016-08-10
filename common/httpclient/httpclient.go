@@ -22,8 +22,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/crypto"
 )
 
 type HTTPClient struct {

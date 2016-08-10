@@ -28,17 +28,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/httpclient"
-	"github.com/ethereum/go-ethereum/common/registrar"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/node"
-	xe "github.com/ethereum/go-ethereum/xeth"
+	"github.com/jumbucks/go-jumbucksee/accounts"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/common/httpclient"
+	"github.com/jumbucks/go-jumbucksee/common/registrar"
+	"github.com/jumbucks/go-jumbucksee/core"
+	"github.com/jumbucks/go-jumbucksee/crypto"
+	"github.com/jumbucks/go-jumbucksee/eth"
+	"github.com/jumbucks/go-jumbucksee/ethdb"
+	"github.com/jumbucks/go-jumbucksee/event"
+	"github.com/jumbucks/go-jumbucksee/node"
+	xe "github.com/jumbucks/go-jumbucksee/xeth"
 )
 
 const (

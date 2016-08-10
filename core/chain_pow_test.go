@@ -22,10 +22,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/pow"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/core/types"
+	"github.com/jumbucks/go-jumbucksee/ethdb"
+	"github.com/jumbucks/go-jumbucksee/pow"
 )
 
 // failPow is a non-validating proof of work implementation, that returns true

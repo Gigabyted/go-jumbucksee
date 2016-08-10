@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/console"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/logger"
-	"github.com/ethereum/go-ethereum/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/accounts"
+	"github.com/jumbucks/go-jumbucksee/cmd/utils"
+	"github.com/jumbucks/go-jumbucksee/console"
+	"github.com/jumbucks/go-jumbucksee/crypto"
+	"github.com/jumbucks/go-jumbucksee/logger"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
 	"gopkg.in/urfave/cli.v1"
 )
 

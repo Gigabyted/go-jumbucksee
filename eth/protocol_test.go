@@ -22,11 +22,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/core/types"
+	"github.com/jumbucks/go-jumbucksee/crypto"
+	"github.com/jumbucks/go-jumbucksee/p2p"
+	"github.com/jumbucks/go-jumbucksee/rlp"
 )
 
 func init() {

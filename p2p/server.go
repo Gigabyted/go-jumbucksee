@@ -25,10 +25,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/logger"
-	"github.com/ethereum/go-ethereum/logger/glog"
-	"github.com/ethereum/go-ethereum/p2p/discover"
-	"github.com/ethereum/go-ethereum/p2p/nat"
+	"github.com/jumbucks/go-jumbucksee/logger"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/p2p/discover"
+	"github.com/jumbucks/go-jumbucksee/p2p/nat"
 )
 
 const (

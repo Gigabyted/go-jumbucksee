@@ -21,12 +21,12 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/logger/glog"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/pow"
+	"github.com/jumbucks/go-jumbucksee/common"
+	"github.com/jumbucks/go-jumbucksee/core/state"
+	"github.com/jumbucks/go-jumbucksee/core/types"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/params"
+	"github.com/jumbucks/go-jumbucksee/pow"
 	"gopkg.in/fatih/set.v0"
 )
 

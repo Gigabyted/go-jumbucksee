@@ -23,8 +23,8 @@ import (
 	"os"
 	"runtime/trace"
 
-	"github.com/ethereum/go-ethereum/logger"
-	"github.com/ethereum/go-ethereum/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/logger"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
 )
 
 // StartGoTrace turns on tracing, writing to the given file.

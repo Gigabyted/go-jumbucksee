@@ -25,9 +25,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/logger/glog"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/tests"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/params"
+	"github.com/jumbucks/go-jumbucksee/tests"
 	"gopkg.in/urfave/cli.v1"
 )
 

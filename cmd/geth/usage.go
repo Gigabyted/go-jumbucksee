@@ -21,8 +21,8 @@ package main
 import (
 	"io"
 
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/internal/debug"
+	"github.com/jumbucks/go-jumbucksee/cmd/utils"
+	"github.com/jumbucks/go-jumbucksee/internal/debug"
 	"gopkg.in/urfave/cli.v1"
 )
 

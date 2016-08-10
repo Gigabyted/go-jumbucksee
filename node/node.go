@@ -26,12 +26,12 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/internal/debug"
-	"github.com/ethereum/go-ethereum/logger"
-	"github.com/ethereum/go-ethereum/logger/glog"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/jumbucks/go-jumbucksee/event"
+	"github.com/jumbucks/go-jumbucksee/internal/debug"
+	"github.com/jumbucks/go-jumbucksee/logger"
+	"github.com/jumbucks/go-jumbucksee/logger/glog"
+	"github.com/jumbucks/go-jumbucksee/p2p"
+	"github.com/jumbucks/go-jumbucksee/rpc"
 )
 
 var (

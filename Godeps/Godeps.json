@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/ethereum/go-ethereum",
+	"ImportPath": "github.com/jumbucks/go-jumbucksee",
 	"GoVersion": "go1.5.2",
 	"GodepVersion": "v74",
 	"Packages": [

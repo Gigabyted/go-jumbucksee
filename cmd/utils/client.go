@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/jumbucks/go-jumbucksee/node"
+	"github.com/jumbucks/go-jumbucksee/rpc"
 	"gopkg.in/urfave/cli.v1"
 )
 

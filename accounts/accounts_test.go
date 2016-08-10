@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/jumbucks/go-jumbucksee/common"
 )
 
 var testSigData = make([]byte, 32)
