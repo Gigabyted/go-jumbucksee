@@ -10,23 +10,23 @@ fi
 # Create fake Go workspace if it doesn't exist yet.
 workspace="$PWD/build/_workspace"
 root="$PWD"
-ethdir="$workspace/src/github.com/ethereum"
-if [ ! -L "$ethdir/go-ethereum" ]; then
+ethdir="$workspace/src/github.com/jumbucks"
+if [ ! -L "$ethdir/go-jumbucksee" ]; then
     mkdir -p "$ethdir"
     cd "$ethdir"
-    ln -s ../../../../../. go-ethereum
+    ln -s ../../../../../. go-jumbucksee
     cd "$root"
 fi
 
 # Set up the environment to use the workspace.
 # Also add Godeps workspace so we build using canned dependencies.
-GOPATH="$ethdir/go-ethereum/Godeps/_workspace:$workspace"
+GOPATH="$ethdir/go-jumbucksee/Godeps/_workspace:$workspace"
 GOBIN="$PWD/build/bin"
 export GOPATH GOBIN
 
 # Run the command inside the workspace.
-cd "$ethdir/go-ethereum"
-PWD="$ethdir/go-ethereum"
+cd "$ethdir/go-jumbucksee"
+PWD="$ethdir/go-jumbucksee"
 
 # Launch the arguments with the configured environment.
 exec "$@"
