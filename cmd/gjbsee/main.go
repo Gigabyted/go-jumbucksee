@@ -83,7 +83,7 @@ func init() {
 	copy(relConfig.Commit[:], commit)
 
 	// Initialize the CLI app and start Gjbsee
-	app = utils.NewApp(verString, "the go-ethereum command line interface")
+	app = utils.NewApp(verString, "the go-jumbucksee command line interface")
 	app.Action = gjbsee
 	app.HideVersion = true // we have a command to print the version
 	app.Commands = []cli.Command{
