@@ -9,7 +9,7 @@ RUN \
   apk del go git make gcc musl-dev                  && \
   rm -rf /go-jumbucksee && rm -rf /var/cache/apk/*
 
-EXPOSE 8545
+EXPOSE 8588
 EXPOSE 30303
 
 ENTRYPOINT ["/gjbsee"]
