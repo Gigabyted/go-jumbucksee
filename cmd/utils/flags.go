@@ -710,7 +710,7 @@ func MakeSystemNode(name, version string, relconf release.Config, extra []byte, 
 	switch {
 	case ctx.GlobalBool(OlympicFlag.Name):
 		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
-			ethConf.NetworkId = 1
+			ethConf.NetworkId = 88
 		}
 		ethConf.Genesis = core.OlympicGenesisBlock()
 
