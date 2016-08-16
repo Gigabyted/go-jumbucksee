@@ -270,7 +270,7 @@ func CalcDifficulty(config *ChainConfig, time, parentTime uint64, parentNumber, 
 
 	// 1 - (block_timestamp -parent_timestamp) // 10
 	x.Sub(bigTime, bigParentTime)
-	x.Div(x, big10)
+	x.Div(x, big88)
 	x.Sub(common.Big1, x)
 
 	// max(1 - (block_timestamp - parent_timestamp) // 10, -99)))
