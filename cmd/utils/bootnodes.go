@@ -22,7 +22,7 @@ import "github.com/jumbucks/go-jumbucksee/p2p/discover"
 // the Frontier network.
 var FrontierBootNodes = []*discover.Node{
 	// ETH/DEV Go Bootnodes
-	discover.MustParseNode("enode://13e07d637d170fdf1f87edd3d671c1417acb856045c1920c4c0bca1d9c19be2a846af891d2c92a677cbf66b61586426c7fff8f4247b6912d88a7dbb762e26288@107.191.104.192:30388"),
+	discover.MustParseNode("enode://931d8c210de5797ea7248b97cc9f254d672b97269ce6b040bbdcb688995166c319d37fea0ac12eff5ebc2cd85b85fc66e9d967d38defa50944b3885abf3b215b@107.191.104.192:30388"),
 }
 
 // TestNetBootNodes are the enode URLs of the P2P bootstrap nodes running on the
