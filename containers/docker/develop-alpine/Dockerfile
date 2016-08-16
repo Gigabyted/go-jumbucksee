@@ -10,6 +10,6 @@ RUN \
   rm -rf /go-jumbucksee && rm -rf /var/cache/apk/*
 
 EXPOSE 8588
-EXPOSE 30303
+EXPOSE 30388
 
 ENTRYPOINT ["/gjbsee"]
