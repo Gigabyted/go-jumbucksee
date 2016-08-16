@@ -288,18 +288,6 @@ func CalcDifficulty(config *ChainConfig, time, parentTime uint64, parentNumber, 
 		x.Set(params.MinimumDifficulty)
 	}
 
-	// for the exponential factor
-	periodCount := new(big.Int).Add(parentNumber, common.Big1)
-	periodCount.Div(periodCount, ExpDiffPeriod)
-
-	// the exponential factor, commonly referred to as "the bomb"
-	// diff = diff + 2^(periodCount - 2)
-	if periodCount.Cmp(common.Big1) > 0 {
-		y.Sub(periodCount, common.Big2)
-		y.Exp(common.Big2, y, nil)
-		x.Add(x, y)
-	}
-
 	return x
 }
 
