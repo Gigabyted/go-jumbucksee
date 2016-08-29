@@ -82,7 +82,7 @@ func (v *BlockValidator) ValidateBlock(block *types.Block) error {
 
 	header := block.Header()
 	// validate the block header
-	if err := ValidateHeader(v.config, v.Pow, header, parent.Header(), false, false); err != nil {
+	if err := ValidateHeader(v.config, v.Pow, header, parent.Header(), false, false, v.bc); err != nil {
 		return err
 	}
 	// verify the uncles are correctly rewarded
@@ -177,7 +177,7 @@ func (v *BlockValidator) VerifyUncles(block, parent *types.Block) error {
 			return UncleError("uncle[%d](%x)'s parent is not ancestor (%x)", i, hash[:4], uncle.ParentHash[0:4])
 		}
 
-		if err := ValidateHeader(v.config, v.Pow, uncle, ancestors[uncle.ParentHash].Header(), true, true); err != nil {
+		if err := ValidateHeader(v.config, v.Pow, uncle, ancestors[uncle.ParentHash].Header(), true, true, v.bc); err != nil {
 			return ValidationError(fmt.Sprintf("uncle[%d](%x) header invalid: %v", i, hash[:4], err))
 		}
 	}
@@ -197,13 +197,13 @@ func (v *BlockValidator) ValidateHeader(header, parent *types.Header, checkPow b
 	if v.bc.HasHeader(header.Hash()) {
 		return nil
 	}
-	return ValidateHeader(v.config, v.Pow, header, parent, checkPow, false)
+	return ValidateHeader(v.config, v.Pow, header, parent, checkPow, false, v.bc)
 }
 
 // Validates a header. Returns an error if the header is invalid.
 //
 // See YP section 4.3.4. "Block Header Validity"
-func ValidateHeader(config *ChainConfig, pow pow.PoW, header *types.Header, parent *types.Header, checkPow, uncle bool) error {
+func ValidateHeader(config *ChainConfig, pow pow.PoW, header *types.Header, parent *types.Header, checkPow, uncle bool, bc *BlockChain) error {
 	if big.NewInt(int64(len(header.Extra))).Cmp(params.MaximumExtraDataSize) == 1 {
 		return fmt.Errorf("Header extra data too long (%d)", len(header.Extra))
 	}
@@ -221,7 +221,55 @@ func ValidateHeader(config *ChainConfig, pow pow.PoW, header *types.Header, pare
 		return BlockEqualTSErr
 	}
 
-	expd := CalcDifficulty(config, header.Time.Uint64(), parent.Time.Uint64(), parent.Number, parent.Difficulty)
+	expd := CalcDifficulty(config, header.Time.Uint64(), parent.Time.Uint64(), parent.Number, parent.Difficulty, bc)
+	if expd.Cmp(header.Difficulty) != 0 {
+		return fmt.Errorf("Difficulty check failed for header %v, %v", header.Difficulty, expd)
+	}
+
+	a := new(big.Int).Set(parent.GasLimit)
+	a = a.Sub(a, header.GasLimit)
+	a.Abs(a)
+	b := new(big.Int).Set(parent.GasLimit)
+	b = b.Div(b, params.GasLimitBoundDivisor)
+	if !(a.Cmp(b) < 0) || (header.GasLimit.Cmp(params.MinGasLimit) == -1) {
+		return fmt.Errorf("GasLimit check failed for header %v (%v > %v)", header.GasLimit, a, b)
+	}
+
+	num := new(big.Int).Set(parent.Number)
+	num.Sub(header.Number, num)
+	if num.Cmp(big.NewInt(1)) != 0 {
+		return BlockNumberErr
+	}
+
+	if checkPow {
+		// Verify the nonce of the header. Return an error if it's not valid
+		if !pow.Verify(types.NewBlockWithHeader(header)) {
+			return &BlockNonceErr{header.Number, header.Hash(), header.Nonce.Uint64()}
+		}
+	}
+	// If all checks passed, validate the extra-data field for hard forks
+	return ValidateDAOHeaderExtraData(config, header)
+}
+
+func ValidateHeaderHeaderChain(config *ChainConfig, pow pow.PoW, header *types.Header, parent *types.Header, checkPow, uncle bool, hc *HeaderChain) error {
+	if big.NewInt(int64(len(header.Extra))).Cmp(params.MaximumExtraDataSize) == 1 {
+		return fmt.Errorf("Header extra data too long (%d)", len(header.Extra))
+	}
+
+	if uncle {
+		if header.Time.Cmp(common.MaxBig) == 1 {
+			return BlockTSTooBigErr
+		}
+	} else {
+		if header.Time.Cmp(big.NewInt(time.Now().Unix())) == 1 {
+			return BlockFutureErr
+		}
+	}
+	if header.Time.Cmp(parent.Time) != 1 {
+		return BlockEqualTSErr
+	}
+
+	expd := CalcDifficultyHeaderChain(config, header.Time.Uint64(), parent.Time.Uint64(), parent.Number, parent.Difficulty, hc)
 	if expd.Cmp(header.Difficulty) != 0 {
 		return fmt.Errorf("Difficulty check failed for header %v, %v", header.Difficulty, expd)
 	}
@@ -254,7 +302,81 @@ func ValidateHeader(config *ChainConfig, pow pow.PoW, header *types.Header, pare
 // CalcDifficulty is the difficulty adjustment algorithm. It returns
 // the difficulty that a new block should have when created at time
 // given the parent block's time and difficulty.
-func CalcDifficulty(config *ChainConfig, time, parentTime uint64, parentNumber, parentDiff *big.Int) *big.Int {
+func CalcDifficulty(config *ChainConfig, time, parentTime uint64, parentNumber, parentDiff *big.Int, bc *BlockChain) *big.Int {
+	// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-2.mediawiki
+	// algorithm:
+	// diff = (parent_diff +
+	//         (parent_diff / 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
+	//        ) + 2^(periodCount - 2)
+
+	bigTime := new(big.Int).SetUint64(time)
+	bigParentTime := new(big.Int).SetUint64(parentTime)
+
+	// holds intermediate values to make the algo easier to read & audit
+	x := new(big.Int)
+	y := new(big.Int)
+
+	// 1 - (block_timestamp -parent_timestamp) // 10
+	x.Sub(bigTime, bigParentTime)
+	x.Div(x, big88)
+	x.Sub(common.Big1, x)
+
+	// max(1 - (block_timestamp - parent_timestamp) // 10, -99)))
+	if x.Cmp(bigMinus99) < 0 {
+		x.Set(bigMinus99)
+	}
+
+	// (parent_diff + parent_diff // 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
+	y.Div(parentDiff, params.DifficultyBoundDivisor)
+	x.Mul(y, x)
+	x.Add(parentDiff, x)
+
+	// minimum difficulty can ever be (before exponential factor)
+	if x.Cmp(params.MinimumDifficulty) < 0 {
+		x.Set(params.MinimumDifficulty)
+	}
+
+	return x
+}
+
+func CalcDifficultyHeaderChain(config *ChainConfig, time, parentTime uint64, parentNumber, parentDiff *big.Int, hc *HeaderChain) *big.Int {
+	// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-2.mediawiki
+	// algorithm:
+	// diff = (parent_diff +
+	//         (parent_diff / 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
+	//        ) + 2^(periodCount - 2)
+
+	bigTime := new(big.Int).SetUint64(time)
+	bigParentTime := new(big.Int).SetUint64(parentTime)
+
+	// holds intermediate values to make the algo easier to read & audit
+	x := new(big.Int)
+	y := new(big.Int)
+
+	// 1 - (block_timestamp -parent_timestamp) // 10
+	x.Sub(bigTime, bigParentTime)
+	x.Div(x, big88)
+	x.Sub(common.Big1, x)
+
+	// max(1 - (block_timestamp - parent_timestamp) // 10, -99)))
+	if x.Cmp(bigMinus99) < 0 {
+		x.Set(bigMinus99)
+	}
+
+	// (parent_diff + parent_diff // 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
+	y.Div(parentDiff, params.DifficultyBoundDivisor)
+	x.Mul(y, x)
+	x.Add(parentDiff, x)
+
+	// minimum difficulty can ever be (before exponential factor)
+	if x.Cmp(params.MinimumDifficulty) < 0 {
+		x.Set(params.MinimumDifficulty)
+	}
+
+	return x
+}
+
+func CalcDifficultyLegacy(config *ChainConfig, time, parentTime uint64, parentNumber, parentDiff *big.Int) *big.Int {
 	// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-2.mediawiki
 	// algorithm:
 	// diff = (parent_diff +

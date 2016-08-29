@@ -469,5 +469,5 @@ func (v *headerValidator) ValidateHeader(header, parent *types.Header, checkPow 
 	if v.hc.HasHeader(header.Hash()) {
 		return nil
 	}
-	return ValidateHeader(v.config, v.Pow, header, parent, checkPow, false)
+	return ValidateHeaderHeaderChain(v.config, v.Pow, header, parent, checkPow, false, v.hc)
 }

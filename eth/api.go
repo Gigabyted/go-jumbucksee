@@ -1745,7 +1745,7 @@ func (api *PrivateDebugAPI) traceBlock(block *types.Block, config *vm.Config) (b
 	config.Debug = true // make sure debug is set.
 	config.Logger.Collector = collector
 
-	if err := core.ValidateHeader(api.config, blockchain.AuxValidator(), block.Header(), blockchain.GetHeader(block.ParentHash()), true, false); err != nil {
+	if err := core.ValidateHeader(api.config, blockchain.AuxValidator(), block.Header(), blockchain.GetHeader(block.ParentHash()), true, false, blockchain); err != nil {
 		return false, collector.traces, err
 	}
 	statedb, err := state.New(blockchain.GetBlock(block.ParentHash()).Root(), api.eth.ChainDb())
