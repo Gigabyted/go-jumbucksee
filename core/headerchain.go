@@ -22,6 +22,7 @@ import (
 	"math/big"
 	mrand "math/rand"
 	"runtime"
+	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -322,6 +323,27 @@ func (hc *HeaderChain) GetBlockHashesFromHash(hash common.Hash, max uint64) []co
 	return chain
 }
 
+func (hc *HeaderChain) GetBlockHeadersFromHash(hash common.Hash, max uint64) []*types.Header {
+	// Get the origin header from which to fetch
+	header := hc.GetHeader(hash)
+	if header == nil {
+		return nil
+	}
+	// Iterate the headers until enough is collected or the genesis reached
+	chain := make([]*types.Header, 0, max)
+	for i := uint64(0); i < max; i++ {
+		next := header.ParentHash
+		if header = hc.GetHeader(next); header == nil {
+			break
+		}
+		chain = append(chain, hc.GetHeader(next))
+		if header.Number.Cmp(common.Big0) == 0 {
+			break
+		}
+	}
+	return chain
+}
+
 // GetTd retrieves a block's total difficulty in the canonical chain from the
 // database by hash, caching it if found.
 func (hc *HeaderChain) GetTd(hash common.Hash) *big.Int {
@@ -336,6 +358,39 @@ func (hc *HeaderChain) GetTd(hash common.Hash) *big.Int {
 	// Cache the found body for next time and return
 	hc.tdCache.Add(hash, td)
 	return td
+}
+
+// calcPastMedianTime calculates the median time of the previous few blocks
+// prior to, and including, the passed block node.
+//
+// Modified from btcsuite
+func (hc *HeaderChain) CalcPastMedianTime(number uint64) *big.Int {
+	medianTimeBlocks := uint64(11)
+
+	// Genesis block.
+	if number == 0 {
+		return hc.GetHeaderByNumber(0).Time
+	}
+
+	timestamps := make([]*big.Int, medianTimeBlocks)
+	numNodes := 0
+	iterNode := hc.GetHeaderByNumber(number)
+
+	ancestors := make(map[common.Hash]*types.Header)
+	for i, ancestor := range hc.GetBlockHeadersFromHash(iterNode.Hash(), medianTimeBlocks) {
+		ancestors[ancestor.Hash()] = ancestor
+		timestamps[i] = ancestor.Time
+		numNodes++
+	}
+
+	// Prune the slice to the actual number of available timestamps which
+	// will be fewer than desired near the beginning of the block chain
+	// and sort them.
+	timestamps = timestamps[:numNodes]
+	sort.Sort(BigIntSlice(timestamps))
+
+	medianTimestamp := timestamps[numNodes/2]
+	return medianTimestamp
 }
 
 // WriteTd stores a block's total difficulty into the database, also caching it
